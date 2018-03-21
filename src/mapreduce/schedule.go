@@ -41,12 +41,14 @@ func schedule(jobName string, mapFiles []string, nReduce int, phase jobPhase, re
 
 		go func() {
 			defer wg.Done()
+			// part_4
 		CallDoTask:
 			worker := <-registerChan
 			// Do work
 			response := call(worker, "Worker.DoTask", taskArgs, new(struct{}))
 			if response == false {
 				fmt.Printf("Worker: RPC %s DoTask error\n", worker)
+				// Handling fallover for part_4
 				go func() { registerChan <- worker }()
 				goto CallDoTask
 			}
